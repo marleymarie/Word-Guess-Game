@@ -1,0 +1,20 @@
+body{
+    background-image: url(https://images.unsplash.com/photo-1536315238512-4c8cebdaaf93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=456&q=80);
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+}
+#maintext{
+    color: aqua;
+    text-align: center;
+    
+}
+
+#secondarytext{
+    color: aqua;
+    text-align: center;
+    font-size: 25px;
+}
+ 
+#background{
+    opacity: 0.1;
+}

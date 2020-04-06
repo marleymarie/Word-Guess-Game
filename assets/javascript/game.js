@@ -1,73 +1,150 @@
-var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+// GLOBAL FUNCTIONS
+// ===========================================================OBAL VARIABLES
+// Arrays and variables for handling data
+var wordPossib = ["rose", "top", "gdragon", "v", "jennie", "lalisa", "taeyang", "jimin", "suga", "seulgi", "irene", "wendy" ];
+var selectWord = "";
+var lettersinWord = [];
+var numBlank = 0;
+var correctOne = [];
+var wrongOne = [];
+var wordGuessDiv = document.getElementById("wordGuess")
+var manyGuessLeft = document.getElementById("quantityGuesses")
+var winCounterNum = document.getElementById("winCount")
+var lossCounterNum = document.getElementById("lossCount")
+var wrongGuessDiv = document.getElementById("letGuesses")
+// Counters
+var winCount = 0;
+var lossCount = 0;
+var guessesLeft = 15;
 
-var wins = 0;
-var attempts = 10;
-
-var guesses = [];
-
-
-var hiddenWord = [];
-
-var computerWord = [];
+// FUNCTIONS
+// ===========================================================
+function startGame() {
+    selectWord = wordPossib[Math.floor(Math.random() * wordPossib.length)];
+    lettersinWord = selectWord.split("");
+    numBlank = lettersinWord.length;
 
 
+    //defaults
+    guessesLeft = 15;
+    wrongOne = [];
+    correctOne = [];
 
-
-
-var computerOptions = ["bts", "twice", "ateez", "seventeen", "blackpink",];
-var computerChoice = computerOptions[Math.floor(Math.random() * computerOptions.length)];
-
-
-function truth(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-        return false;
+    //Pop blanks and successes with right number of blank.
+    for (var i = 0; i < numBlank; i++) {
+        correctOne.push("_");
     }
-    for (var i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
-            return false;
-        } 
-    }
-    return true;
+
+    // Change HTML
+    wordGuessDiv.innerHTML = correctOne.join("  ");
+    manyGuessLeft.innerHTML = guessesLeft;
+    winCounterNum.innerHTML = winCount;
+    lossCounterNum.innerHTML = lossCount;
+    wrongGuessDiv.innerHTML = wrongOne;
+
+    //tests
+
+    console.log(selectWord);
+    console.log(lettersinWord);
+    console.log(numBlank);
+    console.log(correctOne);
+
+
 }
 
-var winsText = document.getElementById("wins");
-var wordDisplay = document.getElementById("word");
-var attemptsText = document.getElementById("guesses-left");
-var guessesText = document.getElementById("already-guessed");
 
+function checkLetters(letter) {
 
-document.onkeyup = function(event) {
-    var letter = event.key.toLowerCase();
-
-    
-    if ((alphabet.indexOf(letter) > -1) && (guesses.indexOf(letter) < 0)) {
-        
-        if (computerWord.indexOf(letter) > -1) {
-            
-            for (var i = 0; i < computerWord.length; i++) {
-                if (letter == computerWord[i]) {
-                    hiddenWord[i] = letter;
-                    wordDisplay.textContent = hiddenWord.join("");
-                }
-            }
-            
+    var letterThere = false;
+    for (var i = 0; i < numBlank; i++) {
+        if (selectWord[i].toUpperCase() == letter) {
+            console.log("CORRECT!")
+            correctOne[i] = letter;
+            letterThere = true;
         }
-
-        if (truth(hiddenWord, computerWord)) {
-            wins += 1;
-            winsText.textContent = wins;
-            
-        }
-        
     }
+
+
+
+
+
+    //where letter is and populate in blanks
+    // if (letterThere) {
+
+    //     for (var i = 0; i < numBlank; i++) {
+    //         if (selectWord[i] == letter) {
+    //             correctOne[i] = letter;
+    //         }
+    //     }
+    // }
+
+
+
+
+    //wrong letter
+    if (!letterThere) {
+        wrongOne.push(letter);
+        guessesLeft--
+    }
+
+    wordGuessDiv.innerHTML = correctOne.join("  ");
+    manyGuessLeft.innerHTML = guessesLeft;
+    winCounterNum.innerHTML = winCount;
+    lossCounterNum.innerHTML = lossCount;
+    wrongGuessDiv.innerHTML = wrongOne;
+
+
 }
 
 
-for (var i = 0; i < computerChoice.length; i++) {
-    hiddenWord[i] = "-";
-}
-wordDisplay.textContent = hiddenWord.join("");
+function roundComplete() {
+    console.log("Win Count: " + winCount + "|  Loss Count: " + lossCount + "|  Guesses Left: " + guessesLeft);
+    console.log({ correctOne, wrongOne })
+    //winner
+    // check if won
+    if (lettersinWord.toString().toUpperCase() == correctOne.toString()) {
+        winCount++;
 
-for (var i = 0; i < computerChoice.length; i++) {
-    computerWord[i] = computerChoice[i];
+
+        winCounterNum.innerHTML = winCount;
+        alert("Winner, WINNER, vegan dinner! Your next stop is " + selectWord.toUpperCase() + "!");
+        startGame();
+
+
+    }
+
+    // if user lost
+
+    else if (guessesLeft == 0) {
+
+        lossCount++;
+        alert("Awwww sucks to suck, TRY AGAIN!")
+
+        lossCounterNum.innerHTML = lossCount;
+
+        startGame();
+
+    }
+
+
+
+
+
+
+
+}
+
+// MAIN PROCESS
+
+
+
+//starts the game
+startGame();
+
+// Register keyclicks
+document.onkeyup = function (event) {
+    var letterGuess = String.fromCharCode(event.keyCode).toUpperCase();
+    checkLetters(letterGuess);
+    roundComplete();
+    console.log(letterGuess);
 }
